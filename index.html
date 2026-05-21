@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌾 গ্রাম বাংলার ধাঁধা</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:'Hind Siliguri',sans-serif;
+
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+url('./bg.jpg');
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+
+color:white;
+
+max-width:500px;
+margin:auto;
+min-height:100vh;
+
+overflow-x:hidden;
+
+animation:dayNight 25s infinite alternate;
+
+}
+
+/* day night */
+
+@keyframes dayNight{
+
+0%{
+filter:brightness(1);
+}
+
+100%{
+filter:brightness(.75) hue-rotate(-10deg);
+}
+
+}
+
+/* floating leaves */
+
+.leaf{
+
+position:fixed;
+
+top:-50px;
+
+font-size:24px;
+
+animation:fall linear infinite;
+
+opacity:.7;
+
+pointer-events:none;
+
+}
+
+@keyframes fall{
+
+0%{
+transform:translateY(-50px) rotate(0deg);
+}
+
+100%{
+transform:translateY(110vh) rotate(360deg);
+}
+
+}
+
+/* popup */
+
+#popup{
+
+position:fixed;
+
+top:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+background:#16a34a;
+
+padding:12px 22px;
+
+border-radius:14px;
+
+font-weight:700;
+
+font-size:18px;
+
+opacity:0;
+
+transition:.4s;
+
+z-index:9999;
+
+}
+
+.showPopup{
+
+opacity:1 !important;
+
+top:40px !important;
+
+}
+
+/* shake */
+
+@keyframes shake{
+
+0%{transform:translateX(0)}
+
+25%{transform:translateX(-5px)}
+
+50%{transform:translateX(5px)}
+
+75%{transform:translateX(-5px)}
+
+100%{transform:translateX(0)}
+
+}
+
+.shake{
+
+animation:shake .3s;
+
+}
+
+/* flash */
+
+.flash{
+
+animation:flash .25s;
+
+}
+
+@keyframes flash{
+
+0%{
+background:red;
+}
+
+100%{
+background:none;
+}
+
+}
+
+/* MAIN */
+
+.container{
+padding:20px;
+}
+
+.card{
+
+background:rgba(255,255,255,.12);
+
+backdrop-filter:blur(12px);
+
+padding:22px;
+
+border-radius:24px;
+
+border:1px solid rgba(255,255,255,.2);
+
+box-shadow:
+0 0 20px rgba(255,215,0,.25),
+0 0 40px rgba(255,100,0,.15);
+
+margin-bottom:20px;
+
+transition:.3s;
+
+}
+
+.title{
+
+text-align:center;
+
+font-size:36px;
+
+font-weight:700;
+
+color:#ffd166;
+
+margin-top:25px;
+
+text-shadow:0 2px 10px rgba(0,0,0,.4);
+
+}
+
+.subtitle{
+
+text-align:center;
+
+margin-bottom:25px;
+
+opacity:.9;
+
+font-size:15px;
+
+}
+
+.roundTitle{
+
+font-size:24px;
+
+font-weight:700;
+
+margin-bottom:10px;
+
+text-align:center;
+
+color:#ffd166;
+
+}
+
+.score{
+
+text-align:center;
+
+font-size:20px;
+
+font-weight:700;
+
+margin-bottom:10px;
+
+}
+
+.rank{
+
+text-align:center;
+
+margin-bottom:15px;
+
+font-size:15px;
+
+color:#ffd166;
+
+}
+
+.lives{
+
+text-align:center;
+
+font-size:24px;
+
+margin-bottom:12px;
+
+}
+
+.coins{
+
+text-align:center;
+
+font-size:18px;
+
+margin-bottom:15px;
+
+color:#ffd166;
+
+}
+
+.question{
+
+font-size:24px;
+
+line-height:1.6;
+
+margin-bottom:22px;
+
+font-weight:600;
+
+min-height:80px;
+
+}
+
+.options{
+
+display:grid;
+
+gap:12px;
+
+}
+
+.opt{
+
+padding:15px;
+
+border:none;
+
+border-radius:16px;
+
+background:rgba(255,255,255,.14);
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.opt:hover{
+
+transform:translateY(-2px);
+
+background:rgba(255,255,255,.25);
+
+}
+
+.correct{
+
+background:#16a34a !important;
+
+}
+
+.wrong{
+
+background:#dc2626 !important;
+
+}
+
+.timerBox{
+
+margin-bottom:18px;
+
+}
+
+.timerText{
+
+margin-bottom:8px;
+
+font-weight:700;
+
+}
+
+.timerBar{
+
+height:10px;
+
+background:rgba(255,255,255,.15);
+
+border-radius:20px;
+
+overflow:hidden;
+
+}
+
+.timerFill{
+
+height:100%;
+
+width:100%;
+
+background:linear-gradient(90deg,#22c55e,#facc15,#ef4444);
+
+transition:1s linear;
+
+}
+
+button{
+
+font-family:'Hind Siliguri',sans-serif;
+
+}
+
+.startBtn,
+.nextBtn,
+.shareBtn,
+.shopBtn{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+border-radius:18px;
+
+font-size:17px;
+
+font-weight:700;
+
+cursor:pointer;
+
+margin-top:12px;
+
+}
+
+.startBtn{
+
+background:linear-gradient(45deg,#f59e0b,#ffbf69);
+
+color:white;
+
+}
+
+.nextBtn{
+
+background:#6366f1;
+
+color:white;
+
+display:none;
+
+}
+
+.shareBtn{
+
+background:#16a34a;
+
+color:white;
+
+}
+
+.shopBtn{
+
+background:#eab308;
+
+color:black;
+
+}
+
+.hide{
+display:none;
+}
+
+.big{
+
+font-size:70px;
+
+text-align:center;
+
+margin-bottom:10px;
+
+animation:pop 1s infinite alternate;
+
+}
+
+@keyframes pop{
+
+from{
+transform:scale(1)
+}
+
+to{
+transform:scale(1.08)
+}
+
+}
+
+.finalScore{
+
+font-size:55px;
+
+text-align:center;
+
+font-weight:700;
+
+color:#ffd166;
+
+margin:15px 0;
+
+}
+
+.leaderboard{
+
+margin-top:20px;
+
+}
+
+.lbItem{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:12px;
+
+margin-bottom:10px;
+
+border-radius:14px;
+
+background:rgba(255,255,255,.14);
+
+}
+
+.footer{
+
+text-align:center;
+
+padding:15px;
+
+opacity:.7;
+
+font-size:13px;
+
+}
+
+.eventBox{
+
+background:rgba(255,215,0,.2);
+
+padding:12px;
+
+border-radius:14px;
+
+margin-bottom:15px;
+
+text-align:center;
+
+font-weight:700;
+
+color:#ffd166;
+
+animation:pop .8s infinite alternate;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="popup"></div>
+
+<div class="leaf" style="left:10%;animation-duration:8s">🍃</div>
+<div class="leaf" style="left:40%;animation-duration:10s">🍂</div>
+<div class="leaf" style="left:70%;animation-duration:7s">🍃</div>
+
+<div class="title">
+🌾 গ্রাম বাংলার ধাঁধা
+</div>
+
+<div class="subtitle">
+গ্রামের মেলা থেকে শুরু তোমার ধাঁধা যাত্রা...
+</div>
+
+<div class="container">
+
+<div id="home">
+
+<div class="card">
+
+<div class="score">
+🏆 Best Score:
+<span id="bestScore">0</span>
+</div>
+
+<button class="startBtn" onclick="startGame()">
+খেলা শুরু করো 🌾
+</button>
+
+<div class="leaderboard">
+
+<h3 style="margin-top:20px;margin-bottom:10px">
+🏆 গ্রামের সেরা খেলোয়াড়
+</h3>
+
+<div id="leaderboard"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="game" class="hide">
+
+<div class="card" id="gameCard">
+
+<div class="roundTitle" id="roundTitle">
+🌾 বাংলা ধাঁধা
+</div>
+
+<div class="score">
+স্কোর:
+<span id="score">0</span>
+</div>
+
+<div class="rank" id="rank">
+🌱 নতুন খেলোয়াড়
+</div>
+
+<div class="coins">
+🪙 Coins:
+<span id="coins">0</span>
+</div>
+
+<div class="lives" id="lives">
+❤️ ❤️ ❤️
+</div>
+
+<div class="eventBox" id="eventBox"></div>
+
+<div class="timerBox">
+
+<div class="timerText">
+⏳ সময়:
+<span id="time">15</span>
+</div>
+
+<div class="timerBar">
+<div class="timerFill" id="timerFill"></div>
+</div>
+
+</div>
+
+<div class="question" id="question"></div>
+
+<div class="options" id="options"></div>
+
+<button class="shopBtn" onclick="useHint()">
+💡 Hint (-5 coins)
+</button>
+
+<button class="nextBtn" id="nextBtn" onclick="nextQuestion()">
+পরের প্রশ্ন →
+</button>
+
+</div>
+
+</div>
+
+<div id="result" class="hide">
+
+<div class="card">
+
+<div class="big">
+🏆
+</div>
+
+<h2 style="text-align:center">
+খেলা শেষ!
+</h2>
+
+<div class="finalScore" id="finalScore">
+0
+</div>
+
+<p id="message" style="text-align:center"></p>
+
+<button class="startBtn" onclick="restartGame()">
+আবার খেলো ↺
+</button>
+
+<button class="shareBtn" onclick="shareScore()">
+📤 স্কোর শেয়ার করো
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+🌾 Made with love in Bangladesh
+</div>
+
+<!-- sounds -->
+
+<audio id="bgMusic" loop>
+<source src="https://cdn.freesound.org/previews/531/531413_1648170-lq.mp3">
+</audio>
+
+<audio id="riverSound" loop>
+<source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c2d4d7c7ab.mp3?filename=river-nature-ambient-5571.mp3">
+</audio>
+
+<audio id="correct1" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3"></audio>
+
+<audio id="wrong1" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3f5a1f4b1f.mp3"></audio>
+
+<audio id="win1" src="https://cdn.pixabay.com/download/audio/2022/10/16/audio_12b0c7443c.mp3"></audio>
+
+<script>
+
+/* ROUND 1 */
+
+const riddles = [
+
+{
+q:'কম দিলে যায় না খাওয়া বেশি দিলে বিষ।',
+o:['চিনি','লবণ','তেল','মরিচ'],
+a:1
+},
+
+{
+q:'রাতে থাকে দিনে থাকে না?',
+o:['অন্ধকার','চাঁদ','ঘুম','তারা'],
+a:0
+},
+
+{
+q:'কোন প্রাণী চোখ খুলে ঘুমায়?',
+o:['মাছ','বাঘ','সাপ','কুকুর'],
+a:0
+},
+
+{
+q:'কোন জিনিস উপরে যায় কিন্তু নিচে আসে না?',
+o:['বয়স','ঘুড়ি','ধোঁয়া','বেলুন'],
+a:0
+},
+
+{
+q:'২৫ থেকে কতবার ৫ নিতে পারবে?',
+o:['১ বার','৫ বার','২ বার','১০ বার'],
+a:0
+}
+
+];
+
+/* ROUND 2 */
+
+const gk = [
+
+{
+q:'কোন প্রাণীর ৩টি হৃদপিণ্ড আছে?',
+o:['অক্টোপাস','তিমি','ডলফিন','হাঙ্গর'],
+a:0
+},
+
+{
+q:'বাংলাদেশের একমাত্র প্রবাল দ্বীপ?',
+o:['সেন্ট মার্টিন','মহেশখালী','কুতুবদিয়া','নিঝুম দ্বীপ'],
+a:0
+},
+
+{
+q:'মানুষের DNA কত শতাংশ কলার সাথে মিলে?',
+o:['২০%','৪০%','৬০%','৮০%'],
+a:2
+},
+
+{
+q:'সবচেয়ে ছোট হাড় কোথায় থাকে?',
+o:['হাতে','কানে','পায়ে','ঘাড়ে'],
+a:1
+},
+
+{
+q:'পৃথিবীর সবচেয়ে গভীর সমুদ্র খাদ?',
+o:['মারিয়ানা','জাভা','টঙ্গা','ফিলিপাইন'],
+a:0
+}
+
+];
+
+const events = [
+
+{
+text:'⚡ Double Points Active!',
+type:'double'
+},
+
+{
+text:'🪙 Bonus Coins Round!',
+type:'coins'
+},
+
+{
+text:'🔥 Combo Madness!',
+type:'combo'
+}
+
+];
+
+let current = 0;
+let score = 0;
+let timer;
+let timeLeft = 15;
+let round = 1;
+let currentQuestions = riddles;
+let lives = 3;
+let coins = 0;
+let streak = 0;
+let activeEvent = null;
+
+let bestScore =
+Number(localStorage.getItem('bestScore') || 0);
+
+document.getElementById('bestScore').innerText =
+bestScore;
+
+loadLeaderboard();
+
+/* ambience */
+
+window.addEventListener('click',()=>{
+
+document.getElementById('bgMusic').play();
+
+document.getElementById('riverSound').play();
+
+},{once:true});
+
+/* popup */
+
+function popup(text){
+
+const p =
+document.getElementById('popup');
+
+p.innerHTML = text;
+
+p.classList.add('showPopup');
+
+setTimeout(()=>{
+
+p.classList.remove('showPopup');
+
+},1500);
+
+}
+
+/* sound */
+
+function playSound(id){
+
+const a = document.getElementById(id);
+
+a.currentTime = 0;
+
+a.play();
+
+}
+
+/* typewriter */
+
+function typeWriter(text){
+
+let i = 0;
+
+const q =
+document.getElementById('question');
+
+q.innerHTML='';
+
+const typing = setInterval(()=>{
+
+q.innerHTML += text.charAt(i);
+
+i++;
+
+if(i>=text.length){
+
+clearInterval(typing);
+
+}
+
+},35);
+
+}
+
+/* start */
+
+function startGame(){
+
+document.getElementById('home')
+.classList.add('hide');
+
+document.getElementById('game')
+.classList.remove('hide');
+
+round = 1;
+current = 0;
+score = 0;
+coins = 0;
+lives = 3;
+streak = 0;
+
+currentQuestions = riddles;
+
+updateUI();
+
+showQuestion();
+
+}
+
+/* ui */
+
+function updateUI(){
+
+document.getElementById('score').innerText =
+score;
+
+document.getElementById('coins').innerText =
+coins;
+
+document.getElementById('lives').innerText =
+'❤️'.repeat(lives);
+
+let rank = '🌱 নতুন খেলোয়াড়';
+
+if(score>=50) rank='😎 চালাক';
+if(score>=100) rank='🔥 ধাঁধা মাস্টার';
+if(score>=150) rank='👑 গ্রামের রাজা';
+
+document.getElementById('rank').innerText =
+rank;
+
+}
+
+/* question */
+
+function showQuestion(){
+
+clearInterval(timer);
+
+const q = currentQuestions[current];
+
+if(Math.random()<0.45){
+
+activeEvent =
+events[Math.floor(Math.random()*events.length)];
+
+document.getElementById('eventBox').innerHTML =
+activeEvent.text;
+
+}
+else{
+
+activeEvent = null;
+
+document.getElementById('eventBox').innerHTML='';
+
+}
+
+typeWriter(q.q);
+
+document.getElementById('nextBtn').style.display =
+'none';
+
+if(round===1){
+
+document.getElementById('roundTitle').innerHTML =
+'🌾 Round 1 — বাংলা ধাঁধা';
+
+}
+else{
+
+document.getElementById('roundTitle').innerHTML =
+'🧠 Round 2 — Hard GK';
+
+}
+
+let html='';
+
+q.o.forEach((op,i)=>{
+
+html += `
+<button class="opt"
+onclick="pick(${i})"
+id="opt${i}">
+${op}
+</button>
+`;
+
+});
+
+document.getElementById('options').innerHTML =
+html;
+
+startTimer();
+
+}
+
+/* timer */
+
+function startTimer(){
+
+timeLeft = 15;
+
+document.getElementById('time').innerText =
+timeLeft;
+
+document.getElementById('timerFill').style.width =
+'100%';
+
+timer = setInterval(()=>{
+
+timeLeft--;
+
+document.getElementById('time').innerText =
+timeLeft;
+
+document.getElementById('timerFill').style.width =
+(timeLeft/15*100)+'%';
+
+if(timeLeft<=0){
+
+clearInterval(timer);
+
+wrongAnswer();
+
+document.getElementById('nextBtn')
+.style.display='block';
+
+}
+
+},1000);
+
+}
+
+/* pick */
+
+function pick(i){
+
+clearInterval(timer);
+
+const q = currentQuestions[current];
+
+document.querySelectorAll('.opt')
+.forEach(b=>b.disabled=true);
+
+if(i===q.a){
+
+document.getElementById('opt'+i)
+.classList.add('correct');
+
+playSound('correct1');
+
+confetti({
+
+particleCount:60,
+
+spread:70,
+
+origin:{y:.7}
+
+});
+
+let pts = 10 + timeLeft;
+
+if(activeEvent){
+
+if(activeEvent.type==='double'){
+
+pts *= 2;
+
+popup('⚡ DOUBLE POINTS!');
+
+}
+
+if(activeEvent.type==='coins'){
+
+coins += 15;
+
+popup('🪙 BONUS COINS +15');
+
+}
+
+}
+
+score += pts;
+
+coins += 5;
+
+streak++;
+
+popup('🔥 +' + pts + ' পয়েন্ট');
+
+if(streak===3){
+
+popup('⚡ Combo Bonus +20');
+
+score += 20;
+
+}
+
+if(streak===5){
+
+popup('☠️ SUPER COMBO +50');
+
+score += 50;
+
+confetti();
+
+}
+
+if(score>=100){
+
+popup('🏅 Achievement Unlocked!');
+
+}
+
+updateUI();
+
+}
+else{
+
+document.getElementById('opt'+i)
+.classList.add('wrong');
+
+document.getElementById('opt'+q.a)
+.classList.add('correct');
+
+wrongAnswer();
+
+}
+
+document.getElementById('nextBtn')
+.style.display='block';
+
+}
+
+/* wrong */
+
+function wrongAnswer(){
+
+playSound('wrong1');
+
+document.body.classList.add('flash');
+
+setTimeout(()=>{
+
+document.body.classList.remove('flash');
+
+},250);
+
+document.getElementById('gameCard')
+.classList.add('shake');
+
+setTimeout(()=>{
+
+document.getElementById('gameCard')
+.classList.remove('shake');
+
+},300);
+
+lives--;
+
+streak = 0;
+
+updateUI();
+
+if(lives<=0){
+
+finishGame();
+
+}
+
+}
+
+/* next */
+
+function nextQuestion(){
+
+current++;
+
+if(current >= currentQuestions.length){
+
+if(round===1){
+
+popup('🌾 তুমি এখন গ্রামের জ্ঞানী বুড়োর কাছে পৌঁছে গেছো!');
+
+round = 2;
+
+current = 0;
+
+currentQuestions = gk;
+
+showQuestion();
+
+return;
+
+}
+
+finishGame();
+
+return;
+
+}
+
+showQuestion();
+
+}
+
+/* hint */
+
+function useHint(){
+
+if(coins<5){
+
+alert('🪙 পর্যাপ্ত coins নেই');
+
+return;
+
+}
+
+coins -= 5;
+
+updateUI();
+
+const q = currentQuestions[current];
+
+alert('💡 Hint: ' + q.o[q.a]);
+
+}
+
+/* finish */
+
+function finishGame(){
+
+document.getElementById('game')
+.classList.add('hide');
+
+document.getElementById('result')
+.classList.remove('hide');
+
+document.getElementById('finalScore').innerText =
+score;
+
+let msg='ভালো চেষ্টা 🌾';
+
+if(score>=150){
+
+msg='👑 তুমি গ্রামের রাজা!';
+
+confetti({
+particleCount:250,
+spread:120
+});
+
+playSound('win1');
+
+}
+
+document.getElementById('message').innerText =
+msg;
+
+if(score>bestScore){
+
+bestScore = score;
+
+localStorage.setItem(
+'bestScore',
+bestScore
+);
+
+document.getElementById('bestScore')
+.innerText = bestScore;
+
+}
+
+saveLeaderboard(score);
+
+loadLeaderboard();
+
+}
+
+/* restart */
+
+function restartGame(){
+
+document.getElementById('home')
+.classList.remove('hide');
+
+document.getElementById('result')
+.classList.add('hide');
+
+}
+
+/* share */
+
+function shareScore(){
+
+const text =
+`আমি গ্রাম বাংলার ধাঁধা গেমে ${score} পয়েন্ট পেয়েছি 🌾`;
+
+navigator.clipboard.writeText(text);
+
+alert('স্কোর কপি হয়েছে');
+
+}
+
+/* leaderboard */
+
+function saveLeaderboard(score){
+
+let board =
+JSON.parse(localStorage.getItem('leaderboard') || '[]');
+
+board.push({
+score:score
+});
+
+board.sort((a,b)=>b.score-a.score);
+
+board = board.slice(0,5);
+
+localStorage.setItem(
+'leaderboard',
+JSON.stringify(board)
+);
+
+}
+
+function loadLeaderboard(){
+
+let board =
+JSON.parse(localStorage.getItem('leaderboard') || '[]');
+
+let html='';
+
+board.forEach((b,i)=>{
+
+html += `
+<div class="lbItem">
+<div>#${i+1}</div>
+<div>${b.score}</div>
+</div>
+`;
+
+});
+
+document.getElementById('leaderboard').innerHTML =
+html;
+
+}
+
+</script>
+
+</body>
+</html>
